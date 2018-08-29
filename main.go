@@ -49,16 +49,16 @@ func main() {
 
 	r.GET("/data_points", GetDataPoints)
 	r.GET("/ping", GetPing)
+	r.POST("/data_points", CreateDataPoint)
 	r.Run()
 }
 
 func GetDataPoints(c *gin.Context) {
 	var datapoints []DataPoint
 	if err := db.Find(&datapoints).Error; err != nil {
-		c.AbortWithStatus(404)
 		fmt.Println(err)
+		c.AbortWithStatus(404)
 	} else {
-		datapoints[0].Course = 1
 		for i := 0; i < len(datapoints); i++{
 			datapoints[i].Timestamp = uint(datapoints[i].CreatedAt.Unix())
 		}
@@ -70,4 +70,15 @@ func GetPing(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "pong",
 	})
+}
+
+func CreateDataPoint(c *gin.Context) {
+	data_point := DataPointFromJson(c.Params)
+	//db.Create(&data_point)
+	//c.JSON(200, data_point)
+	c.JSON(200, gin.H{})
+}
+
+func DataPointFromJson(params gin.Params) DataPoint {
+	return DataPoint{}
 }
