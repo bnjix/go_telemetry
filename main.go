@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"time"
+	_ "time"
 	_ "encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -73,26 +73,13 @@ func GetPing(c *gin.Context) {
 }
 
 func CreateDataPoint(c *gin.Context) {
-	// converter := struct {
-	// 	Timestamp json.Number `form:"locationTimestamp_since1970"`
-	// }{}
-	//c.Request.ParseForm()
-	// fmt.Println(converter)
-	// fmt.Println(c.Request.Form)
-	// fmt.Println(c.PostForm("locationTimestamp_since1970"))
-	// user := c.PostForm("locationTimestamp_since1970")
-	//fmt.Println(user)
-	//integer_timestamp, err := converter.Timestamp.Int64()
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// data_point := DataPoint{
-	// 	Timestamp: uint(integer_timestamp),
-	// }
 	var data_point DataPoint
-	c.Bind(&data_point)
-	fmt.Println(data_point)
-	db.Create(&data_point)
-	c.JSON(200, data_point)
+	if err := c.Bind(&data_point); err != nil {
+		fmt.Println(err)
+		c.AbortWithStatus(400)
+	} else {
+		data_point.DeletedAt = nil
+		db.Create(&data_point)
+		c.JSON(200, data_point)
+	}
 }
