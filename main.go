@@ -1,8 +1,9 @@
 package main
 
 import (
+	"net/http"
 	_ "time"
-	_ "encoding/json"
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -14,7 +15,7 @@ var err error
 
 type DataPoint struct {
 	gorm.Model
-	Timestamp          uint    `form:"locationTimestamp_since1970"`
+	Timestamp          float32 `form:"locationTimestamp_since1970"`
 	Latitude           float32 `form:"locationLatitude"`
 	Longitude          float32 `form:"locationLongitude"`
 	Altitude           float32 `form:"locationAltitude"`
@@ -26,11 +27,11 @@ type DataPoint struct {
 	AccelerationX      float32 `form:"accelerometerAccelerationX"`
 	AccelerationY      float32 `form:"accelerometerAccelerationY"`
 	AccelerationZ      float32 `form:"accelerometerAccelerationZ"`
-	GyroRotationX      float32
-	GyroRotationY      float32
-	GyroRotationZ      float32
+	GyroRotationX      float32 `form:"gyroRotationX"`
+	GyroRotationY      float32 `form:"gyroRotationY"`
+	GyroRotationZ      float32 `form:"gyroRotationZ"`
 	RelativeAltitude   float32 `form:"altimeterRelativeAltitude"`
-	BatteryLevel       float32
+	BatteryLevel       float32 `form:"batteryLevel`
 }
 
 func main() {
@@ -46,6 +47,9 @@ func main() {
 	db.AutoMigrate(&DataPoint{})
 
 	r := gin.Default()
+
+	r.LoadHTMLGlob("templates/*")
+	r.GET("/data_points_html", GetHtml)
 
 	r.GET("/data_points", GetDataPoints)
 	r.GET("/ping", GetPing)
@@ -81,5 +85,19 @@ func CreateDataPoint(c *gin.Context) {
 		data_point.DeletedAt = nil
 		db.Create(&data_point)
 		c.JSON(200, data_point)
+	}
+}
+
+func GetHtml(c *gin.Context) {
+	var datapoints []DataPoint
+	if err := db.Find(&datapoints).Error; err != nil {
+		fmt.Println(err)
+		c.AbortWithStatus(404)
+	} else {
+		dps, _ := json.Marshal(datapoints)
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"title": "Main website",
+			"allDataPoints": string(dps),
+		})
 	}
 }
