@@ -2,6 +2,7 @@ package main
 
 import (
 	//"time"
+	_ "encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -13,23 +14,22 @@ var err error
 
 type DataPoint struct {
 	gorm.Model
-	Timestamp          uint
-	Latitude           float32
-	Longitude          float32
-	Altitude           float32
-	Speed              float32
-	Course             float32
-	Heading            float32
-	VerticalAccuracy   float32
-	HorizontalAccuracy float32
-	TrueHeading        float32
-	AccelerationX      float32
-	AccelerationY      float32
-	AccelerationZ      float32
+	Timestamp          uint    `form:"locationTimestamp_since1970"`
+	Latitude           float32 `form:"locationLatitude"`
+	Longitude          float32 `form:"locationLongitude"`
+	Altitude           float32 `form:"locationAltitude"`
+	Speed              float32 `form:"locationSpeed"`
+	Course             float32 `form:"locationCourse"`
+	Heading            float32 `form:"locationTrueHeading"`
+	VerticalAccuracy   float32 `form:"locationVerticalAccuracy"`
+	HorizontalAccuracy float32 `form:"locationHorizontalAccuracy"`
+	AccelerationX      float32 `form:"accelerometerAccelerationX"`
+	AccelerationY      float32 `form:"accelerometerAccelerationY"`
+	AccelerationZ      float32 `form:"accelerometerAccelerationZ"`
 	GyroRotationX      float32
 	GyroRotationY      float32
 	GyroRotationZ      float32
-	RelativeAltitude   float32
+	RelativeAltitude   float32 `form:"altimeterRelativeAltitude"`
 	BatteryLevel       float32
 }
 
@@ -60,7 +60,7 @@ func GetDataPoints(c *gin.Context) {
 		c.AbortWithStatus(404)
 	} else {
 		for i := 0; i < len(datapoints); i++{
-			datapoints[i].Timestamp = uint(datapoints[i].CreatedAt.Unix())
+			//datapoints[i].Timestamp = uint(datapoints[i].CreatedAt.Unix())
 		}
 		c.JSON(200, datapoints)
 	}
@@ -73,12 +73,26 @@ func GetPing(c *gin.Context) {
 }
 
 func CreateDataPoint(c *gin.Context) {
-	data_point := DataPointFromJson(c.Params)
-	//db.Create(&data_point)
-	//c.JSON(200, data_point)
-	c.JSON(200, gin.H{})
-}
+	// converter := struct {
+	// 	Timestamp json.Number `form:"locationTimestamp_since1970"`
+	// }{}
+	//c.Request.ParseForm()
+	// fmt.Println(converter)
+	// fmt.Println(c.Request.Form)
+	// fmt.Println(c.PostForm("locationTimestamp_since1970"))
+	// user := c.PostForm("locationTimestamp_since1970")
+	//fmt.Println(user)
+	//integer_timestamp, err := converter.Timestamp.Int64()
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-func DataPointFromJson(params gin.Params) DataPoint {
-	return DataPoint{}
+	// data_point := DataPoint{
+	// 	Timestamp: uint(integer_timestamp),
+	// }
+	var data_point DataPoint
+	c.Bind(&data_point)
+	fmt.Println(data_point)
+	db.Create(&data_point)
+	c.JSON(200, data_point)
 }
