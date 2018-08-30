@@ -97,7 +97,7 @@
           }]
         }
       }
-    config = {
+    config1 = {
       type: 'line',
       data: {
         labels: dataPoints.map(p => p.Timestamp),
@@ -150,10 +150,10 @@
         }
       }
     };
-    new Chart(ctx, config);
+    window.chart1 = new Chart(ctx, config1);
 
     ctx = document.getElementById("myChart1").getContext('2d');
-    config = {
+    config2 = {
       type: 'line',
       data: {
         labels: dataPoints.map(p => p.Timestamp),
@@ -179,11 +179,11 @@
       },
       options: opts
     };
-    new Chart(ctx, config);
+    window.chart2 = new Chart(ctx, config2);
 
 
     ctx = document.getElementById("myChart2").getContext('2d');
-    config = {
+    config3 = {
       type: 'line',
       data: {
         labels: dataPoints.map(p => p.Timestamp),
@@ -209,11 +209,11 @@
       },
       options: opts
     };
-    new Chart(ctx, config);
+    window.chart3 = new Chart(ctx, config3);
 
 
     ctx = document.getElementById("myChart3").getContext('2d');
-    config = {
+    config4 = {
       type: 'line',
       data: {
         labels: dataPoints.map(p => p.Timestamp),
@@ -233,10 +233,10 @@
       },
       options: opts
     };
-    new Chart(ctx, config);
+    window.chart4 = new Chart(ctx, config4);
 
     ctx = document.getElementById("myChart4").getContext('2d');
-    config = {
+    config5 = {
       type: 'line',
       data: {
         labels: dataPoints.map(p => p.Timestamp),
@@ -250,10 +250,10 @@
       },
       options: opts
     };
-    new Chart(ctx, config);
+    window.chart5 = new Chart(ctx, config5);
 
     ctx = document.getElementById("myChart5").getContext('2d');
-    config = {
+    config6 = {
       type: 'line',
       data: {
         labels: dataPoints.map(p => p.Timestamp),
@@ -267,7 +267,7 @@
       },
       options: opts
     };
-    new Chart(ctx, config);
+    window.chart6 = new Chart(ctx, config6);
 
     var mymap = L.map('map').setView([51.505, -0.09], 13);
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -291,9 +291,39 @@
     }
 
     c.onmessage = function(msg){
-      var parsed = JSON.parse(msg.data)
+      var parsed = JSON.parse(msg.data);
       //$("#output").append((new Date())+ " <== "+msg.data+"\n")
-      console.log(parsed)
+      console.log(parsed);
+      config1.data.labels.push(parsed.Timestamp);
+      config1.data.datasets[0].data.push(parsed.RelativeAltitude);
+      config1.data.datasets[1].data.push(parsed.Altitude);
+      window.chart1.update();
+      config2.data.labels.push(parsed.Timestamp);
+      config2.data.datasets[0].data.push(parsed.AccelerationX);
+      config2.data.datasets[1].data.push(parsed.AccelerationY);
+      config2.data.datasets[2].data.push(parsed.AccelerationZ);
+      window.chart2.update();
+
+      config3.data.labels.push(parsed.Timestamp);
+      config3.data.datasets[0].data.push(parsed.GyroRotationX);
+      config3.data.datasets[1].data.push(parsed.GyroRotationY);
+      config3.data.datasets[2].data.push(parsed.GyroRotationZ);
+      window.chart3.update();
+
+      config4.data.labels.push(parsed.Timestamp);
+      config4.data.datasets[0].data.push(parsed.Heading);
+      config4.data.datasets[1].data.push(parsed.Course);
+      window.chart4.update();
+
+      config5.data.labels.push(parsed.Timestamp);
+      config5.data.datasets[0].data.push(parsed.Speed*3.6);
+      window.chart5.update();
+
+      config6.data.labels.push(parsed.Timestamp);
+      config6.data.datasets[0].data.push(parsed.BatteryLevel*100);
+      window.chart6.update();
+
+      polyline.addLatLng([parsed.Latitude, parsed.Longitude])
     }
 
     c.onopen = function(){
