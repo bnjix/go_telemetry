@@ -1,13 +1,14 @@
 package main
 
 import (
-	"net/http"
-	_ "time"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"net/http"
+	_ "time"
 )
 
 var db *gorm.DB
@@ -54,6 +55,9 @@ func main() {
 	r.GET("/data_points", GetDataPoints)
 	r.GET("/ping", GetPing)
 	r.POST("/data_points", CreateDataPoint)
+	r.GET("/ws", func(c *gin.Context) {
+		wshandler(c.Writer, c.Request)
+	})
 	r.Run()
 }
 
@@ -63,7 +67,7 @@ func GetDataPoints(c *gin.Context) {
 		fmt.Println(err)
 		c.AbortWithStatus(404)
 	} else {
-		for i := 0; i < len(datapoints); i++{
+		for i := 0; i < len(datapoints); i++ {
 			//datapoints[i].Timestamp = uint(datapoints[i].CreatedAt.Unix())
 		}
 		c.JSON(200, datapoints)
@@ -84,6 +88,7 @@ func CreateDataPoint(c *gin.Context) {
 	} else {
 		data_point.DeletedAt = nil
 		db.Create(&data_point)
+		broadcast <- data_point
 		c.JSON(200, data_point)
 	}
 }
@@ -96,8 +101,28 @@ func GetHtml(c *gin.Context) {
 	} else {
 		dps, _ := json.Marshal(datapoints)
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"title": "Main website",
+			"title":         "Main website",
 			"allDataPoints": string(dps),
 		})
+	}
+}
+
+var wsupgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
+var broadcast = make(chan DataPoint)
+
+func wshandler(w http.ResponseWriter, r *http.Request) {
+	conn, err := wsupgrader.Upgrade(w, r, nil)
+	if err != nil {
+		fmt.Println("Failed to set websocket upgrade: %+v", err)
+		return
+	}
+
+	for {
+		msg := <-broadcast
+		conn.WriteJSON(msg)
 	}
 }

@@ -44,7 +44,11 @@
         <canvas id="myChart5"></canvas>
       </div>
     </div>
-    <div style="width:400px; height:300px;" id="map"></div>
+    <div class="row">
+      <div style="width:400px; height:300px;" id="map"></div>
+      <div class="col-sm"><pre id="output"></pre></div>
+    </div>
+
 
   </div>
 
@@ -278,7 +282,29 @@
     // zoom the map to the polyline
     mymap.fitBounds(polyline.getBounds());
 
+    url = 'ws://localhost:8080/ws';
+    c = new WebSocket(url);
+
+    send = function(data){
+      $("#output").append((new Date())+ " ==> "+data+"\n")
+      c.send({'mydata':data})
+    }
+
+    c.onmessage = function(msg){
+      var parsed = JSON.parse(msg.data)
+      //$("#output").append((new Date())+ " <== "+msg.data+"\n")
+      console.log(parsed)
+    }
+
+    c.onopen = function(){
+      //send("ping")
+      // setInterval(
+      //   function(){ send("ping") }
+      // , 1000 )
+    }
+
   });
+
 
   </script>
   </body>
