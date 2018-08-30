@@ -67,9 +67,6 @@ func GetDataPoints(c *gin.Context) {
 		fmt.Println(err)
 		c.AbortWithStatus(404)
 	} else {
-		for i := 0; i < len(datapoints); i++ {
-			//datapoints[i].Timestamp = uint(datapoints[i].CreatedAt.Unix())
-		}
 		c.JSON(200, datapoints)
 	}
 }
