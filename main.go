@@ -31,7 +31,7 @@ type DataPoint struct {
 	GyroRotationY      float32 `form:"gyroRotationY"`
 	GyroRotationZ      float32 `form:"gyroRotationZ"`
 	RelativeAltitude   float32 `form:"altimeterRelativeAltitude"`
-	BatteryLevel       float32 `form:"batteryLevel`
+	BatteryLevel       float32 `form:"batteryLevel"`
 }
 
 func main() {
@@ -90,7 +90,7 @@ func CreateDataPoint(c *gin.Context) {
 
 func GetHtml(c *gin.Context) {
 	var datapoints []DataPoint
-	if err := db.Limit(100).Find(&datapoints).Error; err != nil {
+	if err := db.Order("ID desc").Limit(100).Find(&datapoints).Error; err != nil {
 		fmt.Println(err)
 		c.AbortWithStatus(404)
 	} else {
