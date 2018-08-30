@@ -95,13 +95,12 @@ func CreateDataPoint(c *gin.Context) {
 
 func GetHtml(c *gin.Context) {
 	var datapoints []DataPoint
-	if err := db.Order("ID desc").Limit(1).Find(&datapoints).Error; err != nil {
+	if err := db.Order("ID desc").Limit(30).Find(&datapoints).Error; err != nil {
 		fmt.Println(err)
 		c.AbortWithStatus(404)
 	} else {
 		dps, _ := json.Marshal(datapoints)
 		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"title":         "Main website",
 			"allDataPoints": string(dps),
 		})
 	}
