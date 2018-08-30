@@ -39,135 +39,72 @@
 <canvas id="myChart2" width="400" height="400"></canvas>
 <canvas id="myChart3" width="400" height="400"></canvas>
  -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"> </script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
 <script>
-    document.addEventListener("DOMContentLoaded", function(){
-    var dataPoints = JSON.parse({{ .allDataPoints }});
-    var ctx = document.getElementById("myChart0").getContext('2d');
-    //ctx.canvas.width = 300a;
-    // ctx.canvas.height = 300;
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-            datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
+  $(document).ready(function() {
+      dataPoints = JSON.parse({{ .allDataPoints }});
+      ctx = document.getElementById("myChart0").getContext('2d');
+      window.chartColors = {
+        red: 'rgb(255, 99, 132)',
+        orange: 'rgb(255, 159, 64)',
+        yellow: 'rgb(255, 205, 86)',
+        green: 'rgb(75, 192, 192)',
+        blue: 'rgb(54, 162, 235)',
+        purple: 'rgb(153, 102, 255)',
+        grey: 'rgb(201, 203, 207)'
+      };
+
+    config = {
+      type: 'line',
+      data: {
+        labels: dataPoints.map(p => p.Timestamp),
+        datasets: [{
+          label: 'Relative Altitude (m)',
+          backgroundColor: window.chartColors.red,
+          borderColor: window.chartColors.red,
+          data: dataPoints.map(p => p.RelativeAltitude),
+          fill: false,
+        }]
+      },
+      options: {
+        title: {
+          display: true,
+          //text: 'Chart.js Line Chart',
         },
-        options: {
-          //responsive: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero:true
-                    }
-                }]
-            }
-        }
-    });
-    var ctx = document.getElementById("myChart1").getContext('2d');
-    //ctx.canvas.width = 300a;
-    // ctx.canvas.height = 300;
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-            datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
+        tooltips: {
+          mode: 'index',
+          intersect: false,
         },
-        options: {
-          //responsive: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero:true
-                    }
-                }]
-            }
-        }
-    });
-    var ctx = document.getElementById("myChart2").getContext('2d');
-    //ctx.canvas.width = 300a;
-    // ctx.canvas.height = 300;
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-            datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
+        hover: {
+          mode: 'nearest',
+          intersect: true
         },
-        options: {
-          //responsive: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero:true
-                    }
-                }]
+        scales: {
+          xAxes: [{
+            display: false,
+            scaleLabel: {
+              display: true,
+              labelString: 'Epoch Timestamp'
             }
+          }],
+          yAxes: [{
+            display: true,
+            scaleLabel: {
+              display: true,
+              //labelString: 'Altitude(m)'
+            }
+          }]
         }
-    });
+      }
+    };
+
+    window.myLine = new Chart(ctx, config);
   });
 
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"> </script>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   </body>
 </html>
