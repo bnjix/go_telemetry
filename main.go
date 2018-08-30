@@ -90,7 +90,7 @@ func CreateDataPoint(c *gin.Context) {
 
 func GetHtml(c *gin.Context) {
 	var datapoints []DataPoint
-	if err := db.Find(&datapoints).Error; err != nil {
+	if err := db.Limit(100).Find(&datapoints).Error; err != nil {
 		fmt.Println(err)
 		c.AbortWithStatus(404)
 	} else {
