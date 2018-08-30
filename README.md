@@ -1,6 +1,7 @@
-# Telemetry and Unicorns
+# Telemetry and Unicorns🦄
 
 
+Here is a preview of the project with data recorded from Benji riding his bike in SF 🤓
 ![Gif preview](preview/preview.gif)
 
 The goal of the project is to be able to receive telemetry data from the excellent [Sensorlog for iOS](https://itunes.apple.com/us/app/sensorlog/id388014573?mt=8).
@@ -13,7 +14,7 @@ The server is written in Go and uses:
 * [Gorm](https://github.com/jinzhu/gorm) for data persistence in Postgres
 * [Gorilla WebSocket](https://github.com/gorilla/websocket/) to support WebSocket and pushing data to the browser as soon as the POST request is received on the server.
 
-The web page uses
+The web page uses:
 * [Bootstrap](https://getbootstrap.com/) for the (very basic) layout
 * [Chart.js](https://www.chartjs.org/) for the charts
 * [Leaflet](https://leafletjs.com/) and [Mapbox](https://www.mapbox.com/) for the map
