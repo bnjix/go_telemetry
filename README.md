@@ -1,9 +1,12 @@
 # Telemetry and Unicorns🦄
 
 
-Here is a preview of the project with data recorded from Benji riding his bike in SF 🤓
+Here is a preview of the project with data recorded from Benji riding his bike in SF 🤓.
+
 There is also a HQ preview [here](preview/preview_hq.gif)
+
 ![Gif preview](preview/preview.gif)
+
 
 The goal of the project is to be able to receive telemetry data from the excellent [Sensorlog for iOS](https://itunes.apple.com/us/app/sensorlog/id388014573?mt=8).
 
@@ -20,4 +23,5 @@ The web page uses:
 * [Chart.js](https://www.chartjs.org/) for the charts
 * [Leaflet](https://leafletjs.com/) and [Mapbox](https://www.mapbox.com/) for the map
 * [Cornify](https://www.cornify.com/) for the unicorns
+
 
