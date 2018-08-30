@@ -324,6 +324,7 @@
       window.chart6.update();
 
       polyline.addLatLng([parsed.Latitude, parsed.Longitude])
+      mymap.fitBounds(polyline.getBounds());
     }
 
     c.onopen = function(){
